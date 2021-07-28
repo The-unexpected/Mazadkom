@@ -13,7 +13,6 @@
 <p>&nbsp;</p>
 
 
-
 ## Team name: 
 - The Unexpected.
 <p>&nbsp;</p>
@@ -27,7 +26,7 @@
 - In our project we aim to create a website that deals with auctions. 
 
 
-
+<!-- 
 <p>&nbsp;</p>
 <!-- 
 # Conflict Plan
@@ -60,9 +59,9 @@
 <p>&nbsp;</p>
 
 ### How will you ensure that you are creating a safe environment where everyone feels comfortable speaking up?
-<p>&nbsp;</p>
+<p>&nbsp;</p> -->
 
-- using Slack and zoom and remo.
+<!-- - using Slack and zoom and remo.
 - we Will use democracy as an example; so voting and opinion sharing is a must.
 - So everyone agreed to mutual respect, and that will guarantee a safe space for everyone.
 <p>&nbsp;</p>
@@ -163,8 +162,8 @@
 
 2. What problem or pain point does it solve? a. Keep it high level without going into too much detail. 
 
-3. Minimum Viable Product (MVP) definition. -->
-      <!-- - What is the minimum required for you to present on your demo day?
+3. Minimum Viable Product (MVP) definition.
+    What is the minimum required for you to present on your demo day?
 
 
 
@@ -177,4 +176,4 @@
          b. A new platform for viewing movies and videos.
 
    3. a. We are developing a fully functional networking and communication platform. <br/>
-      b. A fully functional movie-viewing platform. -->
+      b. A fully functional movie-viewing platform. --> 
