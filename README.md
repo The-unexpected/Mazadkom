@@ -129,7 +129,7 @@
 
 
 
-![workflow](./images/gitflow.png)
+![](./images/gitflow.png)
 
 <p>&nbsp;</p>
 
