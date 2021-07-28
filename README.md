@@ -23,7 +23,7 @@
 
 
 ## Project Idea :
-- In our project we aim to create a website that deals with auctions. 
+- In our project we aim to create a website that deals with auctions. Where the website displays items to be bid on so that the user gets the product that he bid on at the highest price
 
 
 
