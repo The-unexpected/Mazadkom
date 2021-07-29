@@ -1,18 +1,27 @@
 'use strict';
 const express = require('express')
 const app = express();
-
+const cors = require('cors');
 require('dotenv').config();
-// const server = require('./src/server');
 const mongoose = require('mongoose');
 const PORT = process.env.PORT || 5001;
 const MONGODB_URI = process.env.MONGODB_URI;
+const productRouter = require('./routes/product.route');
+
+app.use(express.json());
+app.use(express());
+app.use(cors());
+
+
+
+app.use('/product', productRouter)
+
+
+
 
 app.get('/', (req, res) => {
   res.send('Server is up and running!');
 });
-
-
 
 
 
