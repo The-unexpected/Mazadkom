@@ -73,7 +73,7 @@ No we will try to understand why he/she has this conflict and try to solve it an
 <p>&nbsp;</p>
 
 ### How will you ensure that you are creating a safe environment where everyone feels comfortable speaking up?
-<p>&nbsp;</p> --> -->
+<p>&nbsp;</p> --> 
 
 <!-- - using Slack and zoom and remo.
 - we Will use democracy as an example; so voting and opinion sharing is a must.
