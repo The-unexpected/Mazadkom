@@ -1,8 +1,7 @@
 # Mazadkom
 
-
-
 # Project - prep #1
+
 ## Names :
 - Mohmammad Altamimi. 
 - Ayah Zaareer.
