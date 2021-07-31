@@ -1,23 +1,87 @@
 'use strict';
+require('dotenv').config();
 const express = require('express');
 const app = express();
 const cors = require('cors');
-require('dotenv').config();
 const mongoose = require('mongoose');
 const http = require('http');
 const PORT = process.env.PORT || 5001;
 const MONGODB_URI = process.env.MONGODB_URI;
 const productRouter = require('./routes/product.route');
 const userRouter = require('./routes/user.route');
-
 const server = http.createServer(app);
-
+const io = require('socket.io')(http);
 const productSchema = require('./models/product.schema');
-const userSchema = require('./models/user.schema');
+const userSchema = require('./models/user.schema'); const { v4: uuidv4 } = require('uuid');
 
 app.use(express.json());
 app.use(express());
 app.use(cors());
+io.listen(server);
+
+//routes to use
+app.use('/product', productRouter);
+app.get('/', (req, res) => {
+  res.send('Server is up and running!');
+});
+
+
+// socket
+io.on('connection', (socket) => {
+  console.log('client is connected', socket.id);
+
+  socket.join(room1);
+  io.to('room1').emit('welcome to room');
+
+
+  socket.on('join', (payload) => {
+    console.log(payload);
+    const admins = { name: payload.adminName, id: socket.id }
+    queue.admins.push(admins);
+    console.log(admins, "payload");
+
+    socket.to(adminsRoom).emit('onlineAdmins', admins)
+    console.log(queue.admins);
+  });
+
+
+  socket.on('createTicket', (payload) => {
+    const ticketDetails = { ...payload, id: uuidv4(), socketId: socket.id };
+    queue.tickets.push(ticketDetails);
+    socket.in(adminsRoom).emit('newTicket', ticketDetails);
+    console.log(payload);
+  });
+
+  // notify the client when the admin claims the ticket
+  socket.on('claim', (payload) => {
+    console.log(payload);
+    socket.to(payload.clientId).emit('claimed', { name: payload.name });// which admin claimed your ticket
+    queue.tickets = queue.tickets.filter((ticket) => ticket.id !== payload.id);
+  });
+
+  socket.on('getAll', () => {
+    queue.admins.forEach((human) => {
+      console.log(human);
+      socket.emit('onlineAdmins', { name: human.name, id: human.id });
+    });
+    queue.tickets.forEach((tick) => {
+      socket.emit('newTicket', tick)
+    });
+  })
+
+
+  socket.on('disconnect', () => {
+    socket.to(adminsRoom).emit('offlineAdmins', { id: socket.id });
+    queue.admins = queue.admins.filter((s) => s.id !== socket.id);
+  });
+});
+
+
+
+// server.listen(PORT, () => {
+//   console.log(`server is listening on port ${PORT}`);
+// });
+
 
 mongoose
   .connect(MONGODB_URI, {
@@ -26,76 +90,9 @@ mongoose
     useFindAndModify: false,
   })
   .then(() => {
-    app.listen(PORT, () => console.log(`up and running on ${PORT}`));
+    server.listen(PORT, () => console.log(`up and running on ${PORT}`));
   })
   .catch((e) => {
     console.error('CONNECTION ERROR', e.message);
   });
 
-app.use('/product', productRouter);
-
-app.get('/', (req, res) => {
-  res.send('Server is up and running!');
-});
-
-//sockit
-let io = require('socket.io')(server, {
-  cors: {
-    origins: ['*'],
-  },
-});
-
-const room1 = io.of('/room1');
-const room2 = io.of('/room2');
-const room3 = io.of('/room3');
-const home = io.of('/');
-
-// let carLast = {};
-// let lastToken = "";
-// let carLastPrice = 0;
-// let flag = true;
-let room1Users = [];
-
-room1.on('connection', (socket) => {
-  const socketId = socket.id;
-  socket.on('disconnect', () => {
-    room1Users = room1Users.filter((user) => user.id !== socket.id);
-    room1.emit('room1', { payload: room1Users });
-  });
-
-  socket.on('increasePrice', (data) => {
-    lastToken = data.token;
-    room1LastPrice = data.lastPrice;
-    car.emit('showLatest', { total: data.lastPrice, name: data.userName });
-  });
-
-  socket.on('sold', async (data) => {
-    let arrayOfProducts = await productSchema.find({ _id: data.product._id });
-
-    const soldTo = {
-      name: arrayOfProducts[0].title,
-      price: room1LastPrice,
-      picture: arrayOfProducts[0].picture,
-      description: arrayOfProducts[0].description,
-    };
-
-    const dbUser = await userSchema.authenticateWithToken(lastToken);
-    //last token from front
-    const user = await userSchema.update(dbUser._id, soldTo);
-
-    // let update = await userSchema.updateOne(
-    //   {
-    //     _id: getProduct[0].userId,
-    //     product: { $elemMatch: { _id: getProduct[0]._id } },
-    //   },
-    //   { $set: { 'product.$.status': `sold  price ${carLastPrice} ` } }
-    // );
-
-    let deleted = await productSchema.delete(dbUser._id);
-
-    lastToken = '';
-    carLastPrice = 0;
-
-    home.emit('soldEvent', soldTo);
-  });
-});
