@@ -24,8 +24,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(authRoutes);
 
 app.get('/', (req, res) => {
-  res.send('Welcom from the server');
-})
+  res.send('Welcome from the server');
+});
 
 // Catchalls
 app.use('*', notFound);
