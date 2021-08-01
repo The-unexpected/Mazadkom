@@ -1,7 +1,7 @@
 'use strict';
 const express = require('express');
 const router = express.Router();
-const userModel = require('../models/user.schema');
+const userModel = require('../src/auth/models/user.model');
 const Interface = require('../models/interface');
 const user = new Interface(userModel);
 

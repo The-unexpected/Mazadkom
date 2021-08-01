@@ -26,7 +26,7 @@ io.listen(server);
 const mongoose = require('mongoose');
 const MONGODB_URI = process.env.MONGODB_URI;
 const productRouter = require('./routes/product.route');
-// const userRouter = require('./routes/user.route');
+const userRouter = require('./routes/user.route');
 
 // const io = require('socket.io')(http);
 // const productSchema = require('./models/product.schema');
@@ -47,6 +47,7 @@ app.use(express.urlencoded({ extended: true }));
 
 //routes to use.
 app.use(authRoutes);
+app.use('/user', userRouter);
 app.use('/product', productRouter);
 app.get('/', (req, res) => {
   res.send('Server is up and running!');

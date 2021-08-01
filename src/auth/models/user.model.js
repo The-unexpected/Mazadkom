@@ -4,12 +4,13 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const secret = process.env.SECRET;
+const users = require('../../../models/user.schema');
 
-const users = new mongoose.Schema({
-  username: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  email: { type: String, required: true }
-});
+// const users = new mongoose.Schema({
+//   username: { type: String, required: true, unique: true },
+//   password: { type: String, required: true },
+//   email: { type: String, required: true }
+// });
 
 // Adds a virtual field to the schema. We can see it, but it never persists
 // So, on every user object ... this.token is now readable!
