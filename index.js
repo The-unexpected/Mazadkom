@@ -5,20 +5,27 @@ const app = express();
 const http = require('http');
 const PORT = process.env.PORT || 5001;
 const cors = require('cors');
-app.use(
-  cors({
-    origin: (origin, callback) => callback(null, true),
-    credentials: true
-  })
-);
+// app.use(
+//   cors({
+//     origin: (origin, callback) => callback(null, true),
+//     credentials: true
+//   })
+// );
 const server = http.createServer(app);
-const io = require('socket.io')(http);
+const io = require('socket.io')(http, {
+  cors: {
+    origin: '*',
+    credentials: true
+  },
+});
 
 app.use(express.json());
 
 // app.use(user);
 // app.use(ticketsRoute)
 io.listen(server);
+
+let counter = 0;
 
 
 
@@ -57,6 +64,35 @@ app.get('/', (req, res) => {
 
 app.use(notFound);
 app.use('*', errorHandler);
+
+
+io.on("connection", (socket) => {
+
+
+  console.log("socket", socket.id);
+  socket.on("message", (message) => {
+    socket.broadcast.emit("message", message)
+  })
+
+  socket.emit('click_count', counter);
+
+  //when user click the button
+  socket.on('clicked', function () {
+    counter += 50; //increments global click count
+
+
+    io.emit('click_count', counter);//send to all users new counter value
+
+  });
+  socket.on('getTime', function (msg) {
+    io.emit('remainingTime', (bidDuration - process.hrtime(startTime)[0]));
+  });
+
+})
+// setTimeout(() => {
+//     let counter=0;
+//   }, 5000);
+// }
 
 
 mongoose
