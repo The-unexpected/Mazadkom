@@ -11,19 +11,22 @@ const cors = require('cors');
 //     credentials: true
 //   })
 // );
+
+app.use(express());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cors());
+app.use(express.json());
+
+
 const server = http.createServer(app);
-const io = require('socket.io')(http, {
+const io = require('socket.io')(server, {
   cors: {
-    origin: '*',
-    credentials: true
+    origins: ["*"],
+    handlePreflightRequest: (req, res) => { res.writeHead(200, { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Methods": "POST,GET", "Access-Control-Allow-Credentials": true, }); res.end(); },
   },
 });
 
-app.use(express.json());
-
-// app.use(user);
-// app.use(ticketsRoute)
-io.listen(server);
 
 let counter = 0;
 
@@ -35,21 +38,11 @@ const MONGODB_URI = process.env.MONGODB_URI;
 const productRouter = require('./routes/product.route');
 const userRouter = require('./routes/user.route');
 
-// const io = require('socket.io')(http);
-// const productSchema = require('./models/product.schema');
-// const userSchema = require('./models/user.schema'); 
-// const { v4: uuidv4 } = require('uuid');
-
 const errorHandler = require('./src/error-handlers/500');
 const notFound = require('./src/error-handlers/500');
 const authRoutes = require('./src/auth/routes');
 
-// app.use(morgan('dev'));
-app.use(express());
-app.use(express.json());
-app.use(cors());
-io.listen(server);
-app.use(express.urlencoded({ extended: true }));
+
 
 
 //routes to use.
@@ -62,8 +55,6 @@ app.get('/', (req, res) => {
 
 
 
-app.use(notFound);
-app.use('*', errorHandler);
 
 
 io.on("connection", (socket) => {
@@ -89,17 +80,16 @@ io.on("connection", (socket) => {
   });
 
 })
-// setTimeout(() => {
-//     let counter=0;
-//   }, 5000);
-// }
 
+
+app.use(notFound);
+app.use('*', errorHandler);
 
 mongoose
   .connect(MONGODB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    useFindAndModify: false,
+    useFindAndModify: true,
   })
   .then(() => {
     server.listen(PORT, () => console.log(`up and running on ${PORT}`));
