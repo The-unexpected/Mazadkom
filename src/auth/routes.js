@@ -33,6 +33,18 @@ authRouter.get('/users', async (req, res, next) => {
   const list = users.map(user => user);
   res.status(200).json(list);
 });
+authRouter.get('/users', async (req, res, next) => {
+  const users = await User.find({});
+  const list = users.map(user => user);
+  res.status(200).json(list);
+});
+authRouter.get('/users', async (req, res, next) => {
+  const users = await User.find({});
+  const list = users.map(user => user);
+  res.status(200).json(list);
+});
+
+
 
 authRouter.get('/secret', bearerAuth, async (req, res, next) => {
   res.status(200).send('Welcome to the secret area!');
