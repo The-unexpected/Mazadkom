@@ -79,6 +79,10 @@ io.on("connection", (socket) => {
     io.emit('remainingTime', (bidDuration - process.hrtime(startTime)[0]));
   });
 
+  client.on('disconnect', function () {
+    console.log('disconnected', socket.id)
+})
+
 })
 
 
