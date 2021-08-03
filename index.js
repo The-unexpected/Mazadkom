@@ -5,19 +5,12 @@ const app = express();
 const http = require('http');
 const PORT = process.env.PORT || 5001;
 const cors = require('cors');
-// app.use(
-//   cors({
-//     origin: (origin, callback) => callback(null, true),
-//     credentials: true
-//   })
-// );
 
 app.use(express());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(express.json());
-
 
 const server = http.createServer(app);
 const io = require('socket.io')(server, {
@@ -27,22 +20,15 @@ const io = require('socket.io')(server, {
   },
 });
 
-
-let counter = 0;
-
-
-
+let counters = 0;
 
 const mongoose = require('mongoose');
 const MONGODB_URI = process.env.MONGODB_URI;
 const productRouter = require('./routes/product.route');
 const userRouter = require('./routes/user.route');
-
 const errorHandler = require('./src/error-handlers/500');
 const notFound = require('./src/error-handlers/500');
 const authRoutes = require('./src/auth/routes');
-
-
 
 
 //routes to use.
@@ -54,29 +40,28 @@ app.get('/', (req, res) => {
 });
 
 
-
-
-
 io.on("connection", (socket) => {
-
-
   console.log("socket", socket.id);
   socket.on("message", (message) => {
     socket.broadcast.emit("message", message)
   })
 
-  socket.emit('click_count', counter);
+  socket.emit('click_count', counters);
 
   //when user click the button
   socket.on('clicked', function () {
-    counter += 50; //increments global click count
+    counters += 50; //increments global click count
+    io.emit('click_count', counters);//send to all users new counter value
 
-
-    io.emit('click_count', counter);//send to all users new counter value
-
-  });
-  socket.on('getTime', function (msg) {
-    io.emit('remainingTime', (bidDuration - process.hrtime(startTime)[0]));
+  var counter = 10;
+  var WinnerCountdown = setInterval(function(){
+    io.sockets.emit('counter', counter);
+    counter--
+    if (counter === 0) {
+      io.sockets.emit('counter', "Times UP");
+      clearInterval(WinnerCountdown);
+    }
+  }, 1000);
   });
 
   client.on('disconnect', function () {
