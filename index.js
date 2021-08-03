@@ -22,6 +22,7 @@ const io = require('socket.io')(server, {
 
 let counters = 0;
 
+
 const mongoose = require('mongoose');
 const MONGODB_URI = process.env.MONGODB_URI;
 const productRouter = require('./routes/product.route');
@@ -47,10 +48,39 @@ io.on("connection", (socket) => {
   })
 
   socket.emit('click_count', counters);
+ 
 
   //when user click the button
   socket.on('clicked', function () {
     counters += 50; //increments global click count
+    io.emit('click_count', counters);//send to all users new counter value
+
+  var counter = 10;
+  var WinnerCountdown = setInterval(function(){
+    io.sockets.emit('counter', counter);
+    counter--
+    if (counter === 0) {
+      io.sockets.emit('counter', "Times UP");
+      clearInterval(WinnerCountdown);
+    }
+  }, 1000);
+  });
+  socket.on('clicked1', function () {
+    counters += 100; //increments global click count
+    io.emit('click_count', counters);//send to all users new counter value
+
+  var counter = 10;
+  var WinnerCountdown = setInterval(function(){
+    io.sockets.emit('counter', counter);
+    counter--
+    if (counter === 0) {
+      io.sockets.emit('counter', "Times UP");
+      clearInterval(WinnerCountdown);
+    }
+  }, 1000);
+  });
+  socket.on('clicked2', function () {
+    counters += 200; //increments global click count
     io.emit('click_count', counters);//send to all users new counter value
 
   var counter = 10;
