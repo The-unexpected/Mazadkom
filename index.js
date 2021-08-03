@@ -64,7 +64,7 @@ io.on("connection", (socket) => {
   }, 1000);
   });
 
-  client.on('disconnect', function () {
+  socket.on('disconnect', function () {
     console.log('disconnected', socket.id)
 })
 
