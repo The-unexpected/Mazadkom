@@ -58,51 +58,138 @@ io.on('connection', (socket) => {
   socket.on('message3', (message3) => {
     socket.broadcast.emit('message3', message3);
   });
-  socket.emit('click_count', counters);
-
+  socket.emit('click1_count', counters);
+  socket.emit('click2_count', counters);
   //when user click the button
-  socket.on('clicked', function () {
+  socket.on('room111', function () {
+  socket.on('clickedroom111', function () {
     counters += 50; //increments global click count
-    io.emit('click_count', counters); //send to all users new counter value
+    io.emit('click1_count', counters); //send to all users new counter value
 
     let counter = 5;
     let WinnerCountdown = setInterval(function () {
-      io.sockets.emit('counter', counter);
+      io.sockets.emit('counterroom111', counter);
       counter--;
       if (counter === 0) {
-        io.sockets.emit('counter', 'Times UP');
+        io.sockets.emit('counterroom111', 'Times UP');
         clearInterval(WinnerCountdown);
       }
     }, 1000);
   });
-  socket.on('clicked1', function () {
+  socket.on('clicked1room111', function () {
     counters += 100; //increments global click count
-    io.emit('click_count', counters); //send to all users new counter value
+    io.emit('click1_count', counters); //send to all users new counter value
 
     let counter = 5;
     let WinnerCountdown = setInterval(function () {
-      io.sockets.emit('counter', counter);
+      io.sockets.emit('counterroom111', counter);
       counter--;
       if (counter === 0) {
-        io.sockets.emit('counter', 'Times UP');
+        io.sockets.emit('counterroom111', 'Times UP');
         clearInterval(WinnerCountdown);
       }
     }, 1000);
   });
-  socket.on('clicked2', function () {
+  socket.on('clicked2room111', function () {
     counters += 200; //increments global click count
-    io.emit('click_count', counters); //send to all users new counter value
+    io.emit('click1_count', counters); //send to all users new counter value
 
     let counter = 5;
     let WinnerCountdown = setInterval(function () {
-      io.sockets.emit('counter', counter);
+      io.sockets.emit('counterroom111', counter);
       counter--;
       if (counter === 0) {
-        io.sockets.emit('counter', 'Times UP');
+        io.sockets.emit('counterroom111', 'Times UP');
         clearInterval(WinnerCountdown);
       }
     }, 1000);
-  });
+  });});
+  socket.on('room222', function () {
+    socket.on('clickedroom222', function () {
+      counters += 50; //increments global click count
+      io.emit('click2_count', counters); //send to all users new counter value
+  
+      let counter = 5;
+      let WinnerCountdown = setInterval(function () {
+        io.sockets.emit('counterroom222', counter);
+        counter--;
+        if (counter === 0) {
+          io.sockets.emit('counterroom222', 'Times UP');
+          clearInterval(WinnerCountdown);
+        }
+      }, 1000);
+    });
+    socket.on('clicked1room222', function () {
+      counters += 100; //increments global click count
+      io.emit('click2_count', counters); //send to all users new counter value
+  
+      let counter = 5;
+      let WinnerCountdown = setInterval(function () {
+        io.sockets.emit('counterroom222', counter);
+        counter--;
+        if (counter === 0) {
+          io.sockets.emit('counterroom222', 'Times UP');
+          clearInterval(WinnerCountdown);
+        }
+      }, 1000);
+    });
+    socket.on('clicked2room222', function () {
+      counters += 200; //increments global click count
+      io.emit('click2_count', counters); //send to all users new counter value
+  
+      let counter = 5;
+      let WinnerCountdown = setInterval(function () {
+        io.sockets.emit('counterroom222', counter);
+        counter--;
+        if (counter === 0) {
+          io.sockets.emit('counterroom222', 'Times UP');
+          clearInterval(WinnerCountdown);
+        }
+      }, 1000);
+    });});
+    socket.on('room333', function () {
+      socket.on('clickedroom333', function () {
+        counters += 50; //increments global click count
+        io.emit('click3_count', counters); //send to all users new counter value
+    
+        let counter = 5;
+        let WinnerCountdown = setInterval(function () {
+          io.sockets.emit('counterroom333', counter);
+          counter--;
+          if (counter === 0) {
+            io.sockets.emit('counterroom333', 'Times UP');
+            clearInterval(WinnerCountdown);
+          }
+        }, 1000);
+      });
+      socket.on('clicked1room333', function () {
+        counters += 100; //increments global click count
+        io.emit('click3_count', counters); //send to all users new counter value
+    
+        let counter = 5;
+        let WinnerCountdown = setInterval(function () {
+          io.sockets.emit('counterroom333', counter);
+          counter--;
+          if (counter === 0) {
+            io.sockets.emit('counterroom333', 'Times UP');
+            clearInterval(WinnerCountdown);
+          }
+        }, 1000);
+      });
+      socket.on('clicked2room333', function () {
+        counters += 200; //increments global click count
+        io.emit('click3_count', counters); //send to all users new counter value
+    
+        let counter = 5;
+        let WinnerCountdown = setInterval(function () {
+          io.sockets.emit('counterroom333', counter);
+          counter--;
+          if (counter === 0) {
+            io.sockets.emit('counterroom333', 'Times UP');
+            clearInterval(WinnerCountdown);
+          }
+        }, 1000);
+      });});
 
   socket.on('disconnect', function () {
     console.log('disconnected', socket.id);
