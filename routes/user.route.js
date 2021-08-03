@@ -17,11 +17,15 @@ async function getUser(req, res, next) {
   try {
     const id = req.params.id;
     const UserInfo = await user.read(id);
+    console.log(UserInfo[0].bids[0]._id);
     res.json({ UserInfo });
   } catch (e) {
     next(e);
   }
 }
+
+
+
 
 async function createUser(req, res, next) {
   try {

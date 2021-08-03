@@ -4,32 +4,54 @@ const router = express.Router();
 const { productModel } = require('../models/product.schema');
 const Interface = require('../models/interface');
 const product = new Interface(productModel);
+const users = require('../src/auth/models/user.model');
 
 
 router.get('/', getProduct);
 router.get('/:id', getProduct);
-router.post('/', createProduct);
+router.post('/:id', createProduct);
 router.put('/:id', updateProduct);
 router.delete('/:id', deleteProduct);
 
 
 async function getProduct(req, res, next) {
-  try {
-    const id = req.params.id;
-    const ProductInfo = await product.read(id);
-    res.json({ ProductInfo });
-  } catch (e) {
-    next(e);
-  }
+  let array = [];
+  let userId = req.params.id;
+  // console.log(req);
+  // console.log(res);
+  users.find({ _id: userId }, (error, data) => {
+    data[0].bids.map((bid) => {
+      array.push(bid);
+    })
+    res.json(array);
+  })
 }
 
+
+// try {
+//   const data = req.body;
+//   const newUser = await user.create(data);
+//   res.json(newUser);
+// } catch (e) {
+//   next(e);
+// }
+
 async function createProduct(req, res, next) {
+  // console.log('req', req, 'res', res);
   try {
-    const data = req.body;
-    const newProduct = await product.create(data);
-    res.json(newProduct);
-  } catch (e) {
-    next(e);
+    let array = [];
+    let userId = req.params.id;
+    const data1 = req.body;
+    const newProduct = await product.create(data1);
+    users.find({ _id: userId }, (error, data) => {
+      data[0].bids.push(newProduct);
+      data[0].save();
+      res.json(data[0].bids);
+    });
+
+  }
+  catch (e) {
+    console.log(e.message);
   }
 }
 
