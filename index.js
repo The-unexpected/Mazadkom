@@ -69,8 +69,8 @@ io.on("connection", (socket) => {
     counters += 100; //increments global click count
     io.emit('click_count', counters);//send to all users new counter value
 
-  var counter = 10;
-  var WinnerCountdown = setInterval(function(){
+  let counter = 5;
+  let WinnerCountdown = setInterval(function(){
     io.sockets.emit('counter', counter);
     counter--
     if (counter === 0) {
@@ -83,8 +83,8 @@ io.on("connection", (socket) => {
     counters += 200; //increments global click count
     io.emit('click_count', counters);//send to all users new counter value
 
-  var counter = 10;
-  var WinnerCountdown = setInterval(function(){
+  let counter = 5;
+  let WinnerCountdown = setInterval(function(){
     io.sockets.emit('counter', counter);
     counter--
     if (counter === 0) {
