@@ -57,12 +57,17 @@ io.on("connection", (socket) => {
   socket.on("message", (message) => {
     socket.broadcast.emit("message", message)
   })
+
+  socket.on("print", (data) => {
+    socket.broadcast.emit("print", data)
+  })
   socket.emit('click_count', counters);// first time??
- 
+
   //when user click the button
   socket.on('clicked', function () {
     counters += 50; //increments global click count
     io.emit('click_count', counters);//send to all users new counter value
+
 
   let timer = 5;
   let WinnerCountdown = setInterval(function(){
@@ -74,6 +79,7 @@ io.on("connection", (socket) => {
     }
     
   }, 1000);
+
   });
 
 
@@ -81,20 +87,6 @@ io.on("connection", (socket) => {
     counters += 100; //increments global click count
     io.emit('click_count', counters);//send to all users new counter value
 
-  let timer = 5;
-  let WinnerCountdown = setInterval(function(){
-    io.sockets.emit('counter', timer);
-    timer--
-    if (timer === 0) {
-      io.sockets.emit('counter', "Times UP");
-      clearInterval(WinnerCountdown);
-    }
-    
-  }, 1000);
-  });
-  socket.on('clicked2', function () {
-    counters += 200; //increments global click count
-    io.emit('click_count', counters);//send to all users new counter value
 
   let timer = 5;
   let WinnerCountdown = setInterval(function(){
@@ -106,6 +98,24 @@ io.on("connection", (socket) => {
     }
     
   }, 1000);
+
+  });
+  socket.on('clicked2', function () {
+    counters += 200; //increments global click count
+    io.emit('click_count', counters);//send to all users new counter value
+
+
+  let timer = 5;
+  let WinnerCountdown = setInterval(function(){
+    io.sockets.emit('counter', timer);
+    timer--
+    if (timer === 0) {
+      io.sockets.emit('counter', "Times UP");
+      clearInterval(WinnerCountdown);
+    }
+    
+  }, 1000);
+
   });
 
 
@@ -114,7 +124,7 @@ io.on("connection", (socket) => {
 
   socket.on('disconnect', function () {
     console.log('disconnected', socket.id)
-})
+  })
 
 })
 
