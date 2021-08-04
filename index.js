@@ -72,6 +72,7 @@ io.on("connection", (socket) => {
       io.sockets.emit('counter', "Times UP");
       clearInterval(WinnerCountdown);
     }
+    
   }, 1000);
   });
 
@@ -88,6 +89,7 @@ io.on("connection", (socket) => {
       io.sockets.emit('counter', "Times UP");
       clearInterval(WinnerCountdown);
     }
+    
   }, 1000);
   });
   socket.on('clicked2', function () {
@@ -102,8 +104,13 @@ io.on("connection", (socket) => {
       io.sockets.emit('counter', "Times UP");
       clearInterval(WinnerCountdown);
     }
+    
   }, 1000);
   });
+
+
+  counters=0;
+
 
   socket.on('disconnect', function () {
     console.log('disconnected', socket.id)
