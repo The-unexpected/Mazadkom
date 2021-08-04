@@ -109,8 +109,8 @@ io.on("connection", (socket) => {
     }, 1000);
   });
 
-  counter = 0;
-  
+  counters = 0;
+
   socket.on('disconnect', function () {
     console.log('disconnected', socket.id)
   })
