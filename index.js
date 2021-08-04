@@ -60,6 +60,8 @@ io.on('connection', (socket) => {
   });
   socket.emit('click1_count', counters);
   socket.emit('click2_count', counters);
+  socket.emit('click3_count', counters);
+
   //when user click the button
   socket.on('room111', function () {
   socket.on('clickedroom111', function () {
