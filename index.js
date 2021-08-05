@@ -86,6 +86,7 @@ io.on("connection", (socket) => {
       }, 1000);
     }
 
+
   });
 
 
@@ -108,6 +109,7 @@ io.on("connection", (socket) => {
 
       }, 1000);
     }
+
 
 
   });
@@ -135,6 +137,7 @@ io.on("connection", (socket) => {
 
 
   counters = 0;
+
 
 
   socket.on('disconnect', function () {
