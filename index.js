@@ -50,7 +50,10 @@ app.get('/', (req, res) => {
 
 
 let counters = 0;
+let runTimer = true;
 // socket connection 
+
+
 
 io.on("connection", (socket) => {
   // console.log("socket", socket.id);
@@ -68,17 +71,20 @@ io.on("connection", (socket) => {
     counters += 50; //increments global click count
     io.emit('click_count', counters);//send to all users new counter value
 
+    if (runTimer) {
+      runTimer = false
+      let timer = 15;
+      let WinnerCountdown = setInterval(function () {
+        io.sockets.emit('counter', timer);
+        timer--;
+        if (timer === 0) {
+          runTimer = true
+          io.sockets.emit('counter', "Times UP");
+          clearInterval(WinnerCountdown);
+        }
 
-  let timer = 5;
-  let WinnerCountdown = setInterval(function(){
-    io.sockets.emit('counter', timer);
-    timer--;
-    if (timer === 0) {
-      io.sockets.emit('counter', "Times UP");
-      clearInterval(WinnerCountdown);
+      }, 1000);
     }
-    
-  }, 1000);
 
   });
 
@@ -88,16 +94,21 @@ io.on("connection", (socket) => {
     io.emit('click_count', counters);//send to all users new counter value
 
 
-  let timer = 5;
-  let WinnerCountdown = setInterval(function(){
-    io.sockets.emit('counter', timer);
-    timer--
-    if (timer === 0) {
-      io.sockets.emit('counter', "Times UP");
-      clearInterval(WinnerCountdown);
+    if (runTimer) {
+      runTimer = false
+      let timer = 15;
+      let WinnerCountdown = setInterval(function () {
+        io.sockets.emit('counter', timer);
+        timer--;
+        if (timer === 0) {
+          runTimer = true
+          io.sockets.emit('counter', "Times UP");
+          clearInterval(WinnerCountdown);
+        }
+
+      }, 1000);
     }
-    
-  }, 1000);
+
 
   });
   socket.on('clicked2', function () {
@@ -105,26 +116,37 @@ io.on("connection", (socket) => {
     io.emit('click_count', counters);//send to all users new counter value
 
 
-  let timer = 5;
-  let WinnerCountdown = setInterval(function(){
-    io.sockets.emit('counter', timer);
-    timer--
-    if (timer === 0) {
-      io.sockets.emit('counter', "Times UP");
-      clearInterval(WinnerCountdown);
+    if (runTimer) {
+      runTimer = false
+      let timer = 15;
+      let WinnerCountdown = setInterval(function () {
+        io.sockets.emit('counter', timer);
+        timer--;
+        if (timer === 0) {
+          runTimer = true
+          io.sockets.emit('counter', "Times UP");
+          clearInterval(WinnerCountdown);
+        }
+
+      }, 1000);
     }
-    
-  }, 1000);
 
   });
 
 
-  counters=0;
+  counters = 0;
 
 
   socket.on('disconnect', function () {
     console.log('disconnected', socket.id)
   })
+
+
+  socket.on('winner', function (winner) {
+    io.emit('resWinner', winner)
+    console.log("responseWinner", winner);
+  });
+
 
 })
 
