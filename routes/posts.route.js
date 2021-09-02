@@ -27,14 +27,12 @@ async function getPost(req, res, next) {
 
 async function getPostId(req, res, next) {
   let userId = req.params.id1;
-  console.log("req.params", req.params);
   users.find({ _id: userId }, (error, data) => {
     const postId = req.params.id2;
-    console.log("data", data[0].posts);
-    data[0].posts.find({ _id: postId }, (error, data) => {
-      console.log("====================================");
-      console.log(data);
-      console.log("====================================");
+    data[0].posts.map((ele) => {
+      if (postId == ele._id) {
+        return res.json(ele);
+      }
     });
   });
 }
