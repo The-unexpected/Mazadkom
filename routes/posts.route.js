@@ -9,8 +9,8 @@ const users = require("../src/auth/models/user.model");
 router.get("/:id", getPost);
 router.get("/:id1/:id2", getPostId);
 router.post("/:id", createPost);
-// router.put("/:id", updatePost);
-// router.delete("/:id", deletePost);
+router.put("/:id1/:id2", updatePost);
+router.delete("/:id", deletePost);
 
 async function getPost(req, res, next) {
   let array = [];
@@ -52,26 +52,47 @@ async function createPost(req, res, next) {
   }
 }
 
-// async function updatePost(req, res, next) {
-//   try {
-//     const id = req.params._id;
-//     const data = req.body;
-//     const newPost = await post.update(id, data);
-//     res.json(newPost);
-//   } catch (e) {
-//     next(e);
-//   }
-// }
+function updatePost(req, res, next) {
+  try {
+    const userId = req.params.id1;
+    const value = req.body;
+    const postId = req.params.id2;
 
-// async function deletePost(req, res, next) {
-//   try {
-//     const id = req.params.id;
-//     console.log(req.params);
-//     const deletedPost = await post.delete(id);
-//     res.json(deletedPost);
-//   } catch (e) {
-//     next(e);
-//   }
-// }
+    users.find({ _id: userId }, (error, data) => {
+      const postId = req.params.id2;
+      data[0].posts.map((ele) => {
+        if (postId == ele._id) {
+          value.title ? (ele.title = value.title) : ele.title;
+
+          value.description
+            ? (ele.description = value.description)
+            : ele.description;
+
+          value.picture ? (ele.picture = value.picture) : ele.picture;
+
+          value.startingPrice
+            ? (ele.startingPrice = value.startingPrice)
+            : ele.startingPrice;
+
+          data[0].save();
+          return res.json(data[0]);
+        }
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+}
+
+async function deletePost(req, res, next) {
+  try {
+    const id = req.params.id;
+    console.log(req.params);
+    const deletedPost = await post.delete(id);
+    res.json(deletedPost);
+  } catch (e) {
+    next(e);
+  }
+}
 
 module.exports = router;
