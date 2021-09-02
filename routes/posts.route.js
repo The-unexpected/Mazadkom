@@ -10,7 +10,7 @@ router.get("/:id", getPost);
 router.get("/:id1/:id2", getPostId);
 router.post("/:id", createPost);
 router.put("/:id1/:id2", updatePost);
-router.delete("/:id", deletePost);
+router.delete("/:id1/:id2", deletePost);
 
 async function getPost(req, res, next) {
   let array = [];
@@ -86,10 +86,19 @@ function updatePost(req, res, next) {
 
 async function deletePost(req, res, next) {
   try {
-    const id = req.params.id;
-    console.log(req.params);
-    const deletedPost = await post.delete(id);
-    res.json(deletedPost);
+    let array = [];
+    let userId = req.params.id1;
+    users.find({ _id: userId }, (error, data) => {
+      const postId = req.params.id2;
+      data[0].posts.map((ele) => {
+        if (ele.id !== postId) {
+          array.push(ele);
+        }
+      });
+      data[0].posts = array;
+      data[0].save();
+      res.json(data[0]);
+    });
   } catch (e) {
     next(e);
   }
