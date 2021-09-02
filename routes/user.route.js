@@ -1,17 +1,15 @@
-'use strict';
-const express = require('express');
+"use strict";
+const express = require("express");
 const router = express.Router();
-const userModel = require('../src/auth/models/user.model');
-const Interface = require('../models/interface');
+const userModel = require("../src/auth/models/user.model");
+const Interface = require("../models/interface");
 const user = new Interface(userModel);
 
-
-router.get('/', getUser);
-router.get('/:id', getUser);
-router.post('/', createUser);
-router.put('/:id', updateUser);
-router.delete('/:id', deleteUser);
-
+router.get("/", getUser);
+router.get("/:id", getUser);
+router.post("/", createUser);
+router.put("/:id", updateUser);
+router.delete("/:id", deleteUser);
 
 async function getUser(req, res, next) {
   try {
@@ -23,9 +21,6 @@ async function getUser(req, res, next) {
     next(e);
   }
 }
-
-
-
 
 async function createUser(req, res, next) {
   try {
@@ -57,6 +52,5 @@ async function deleteUser(req, res, next) {
     next(e);
   }
 }
-
 
 module.exports = router;
