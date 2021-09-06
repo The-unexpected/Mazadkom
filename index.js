@@ -12,6 +12,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(express.json());
 
+
+const { addUser, removeUser, getUser, getUsersIntitle } = require("./users");
+
+
 const server = http.createServer(app);
 const io = require("socket.io")(server, {
   cors: {
@@ -53,30 +57,51 @@ let runTimer = true;
 // socket connection
 
 io.on("connection", (socket) => {
-  // console.log("socket", socket.id);
-  socket.on("message", (message) => {
-    socket.broadcast.emit("message", message);
+  socket.on("join", ({ username, title }, callback) => {
+    const { error, user } = addUser({ id: socket.id, username, title });
+    console.log('user', user)
+
+    if (error) return callback(error);
+
+    socket.join(user.title);
+
+    callback();
+
+  });
+
+  socket.on("message", (message, callback) => {
+    const user = getUser(socket.id);
+    console.log("message sent", user);
+    socket.to(user.title).emit("message", { message, username: user.username });
+    console.log('message', message)
+
   });
 
   socket.on("print", (data) => {
-    socket.broadcast.emit("print", data);
+    const user = getUser(socket.id);
+    socket.to(user.title).emit("print", data);
+    console.log("print sent", user);
   });
+
   socket.emit("click_count", counters); // first time??
 
   //when user click the button
   socket.on("clicked", function () {
+    const user = getUser(socket.id);
+    console.log('user increase',user)
+
     counters += 50; //increments global click count
-    io.emit("click_count", counters); //send to all users new counter value
+    io.to(user.title).emit("click_count", counters); //send to all users new counter value
 
     if (runTimer) {
       runTimer = false;
       let timer = 15;
       let WinnerCountdown = setInterval(function () {
-        io.sockets.emit("counter", timer);
+        io.sockets.to(user.title).emit("counter", timer);
         timer--;
         if (timer === 0) {
           runTimer = true;
-          io.sockets.emit("counter", "Times UP");
+          io.sockets.to(user.title).emit("counter", "Times UP");
           clearInterval(WinnerCountdown);
         }
       }, 1000);
@@ -84,36 +109,38 @@ io.on("connection", (socket) => {
   });
 
   socket.on("clicked1", function () {
+    const user = getUser(socket.id);
     counters += 100; //increments global click count
-    io.emit("click_count", counters); //send to all users new counter value
+    io.to(user.title).emit("click_count", counters); //send to all users new counter value
 
     if (runTimer) {
       runTimer = false;
       let timer = 15;
       let WinnerCountdown = setInterval(function () {
-        io.sockets.emit("counter", timer);
+        io.sockets.to(user.title).emit("counter", timer);
         timer--;
         if (timer === 0) {
           runTimer = true;
-          io.sockets.emit("counter", "Times UP");
+          io.sockets.to(user.title).emit("counter", "Times UP");
           clearInterval(WinnerCountdown);
         }
       }, 1000);
     }
   });
   socket.on("clicked2", function () {
+    const user = getUser(socket.id);
     counters += 200; //increments global click count
-    io.emit("click_count", counters); //send to all users new counter value
+    io.to(user.title).emit("click_count", counters); //send to all users new counter value
 
     if (runTimer) {
       runTimer = false;
       let timer = 15;
       let WinnerCountdown = setInterval(function () {
-        io.sockets.emit("counter", timer);
+        io.sockets.to(user.title).emit("counter", timer);
         timer--;
         if (timer === 0) {
           runTimer = true;
-          io.sockets.emit("counter", "Times UP");
+          io.sockets.to(user.title).emit("counter", "Times UP");
           clearInterval(WinnerCountdown);
         }
       }, 1000);
@@ -122,15 +149,28 @@ io.on("connection", (socket) => {
 
   counters = 0;
 
-  socket.on("disconnect", function () {
-    console.log("disconnected", socket.id);
-  });
-
   socket.on("winner", function (winner) {
-    io.emit("resWinner", winner);
+    const user = getUser(socket.id);
+    io.to(user.title).emit("resWinner", winner);
     console.log("responseWinner", winner);
   });
+  
+  socket.on("disconnect", () => {
+    const user = removeUser(socket.id);
+
+    if (user) {
+      io.to(user.title).emit("message", {
+        user: "admin",
+        text: `${user.name} has left!`,
+      });
+      io.to(user.title).emit("titleData", {
+        title: user.title,
+        users: getUsersIntitle(user.title),
+      });
+    }
+  });
 });
+
 
 app.use(notFound);
 app.use("*", errorHandler);
