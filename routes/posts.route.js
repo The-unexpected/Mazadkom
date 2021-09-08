@@ -15,10 +15,10 @@ router.delete("/:id1/:id2", deletePost);
 async function getPost(req, res, next) {
   let array = [];
   let userId = req.params.id;
-  console.log("req.params", req.params);
+  // console.log("req.params", req.params);
   users.find({ _id: userId }, (error, data) => {
-    console.log("data", data);
-    data[0].posts.map((bid) => {
+    // console.log("data", data);
+    data[0]?.posts?.map((bid) => {
       array.push(bid);
     });
     res.json(array);

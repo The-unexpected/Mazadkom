@@ -1,19 +1,17 @@
-'use strict';
+"use strict";
 
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const { productModel } = require('../models/product.schema');
-const Interface = require('../models/interface');
+const { productModel } = require("../models/product.schema");
+const Interface = require("../models/interface");
 const product = new Interface(productModel);
-const users = require('../src/auth/models/user.model');
+const users = require("../src/auth/models/user.model");
 
-
-router.get('/', getProduct);
-router.get('/:id', getProduct);
-router.post('/:id', createProduct);
+// router.get('/', getProduct);
+router.get("/:id", getProduct);
+router.post("/:id", createProduct);
 // router.put('/:id', updateProduct);
 // router.delete('/:id', deleteProduct);
-
 
 async function getProduct(req, res, next) {
   let array = [];
@@ -21,12 +19,10 @@ async function getProduct(req, res, next) {
   users.find({ _id: userId }, (error, data) => {
     data[0].bids.map((bid) => {
       array.push(bid);
-    })
+    });
     res.json(array);
-  })
+  });
 }
-
-
 
 async function createProduct(req, res, next) {
   try {
@@ -38,8 +34,7 @@ async function createProduct(req, res, next) {
       data[0].save();
       res.json(data[0].bids);
     });
-  }
-  catch (e) {
+  } catch (e) {
     console.log(e.message);
   }
 }
@@ -64,6 +59,5 @@ async function createProduct(req, res, next) {
 //     next(e);
 //   }
 // }
-
 
 module.exports = router;

@@ -12,9 +12,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(express.json());
 
-
 const { addUser, removeUser, getUser, getUsersIntitle } = require("./users");
-
 
 const server = http.createServer(app);
 const io = require("socket.io")(server, {
@@ -59,22 +57,20 @@ let runTimer = true;
 io.on("connection", (socket) => {
   socket.on("join", ({ username, title }, callback) => {
     const { error, user } = addUser({ id: socket.id, username, title });
-    console.log('user', user)
+    console.log("user", user);
 
     if (error) return callback(error);
 
     socket.join(user.title);
 
     callback();
-
   });
 
   socket.on("message", (message, callback) => {
     const user = getUser(socket.id);
     console.log("message sent", user);
     socket.to(user.title).emit("message", { message, username: user.username });
-    console.log('message', message)
-
+    console.log("message", message);
   });
 
   socket.on("print", (data) => {
@@ -88,7 +84,7 @@ io.on("connection", (socket) => {
   //when user click the button
   socket.on("clicked", function () {
     const user = getUser(socket.id);
-    console.log('user increase',user)
+    console.log("user increase", user);
 
     counters += 50; //increments global click count
     io.to(user.title).emit("click_count", counters); //send to all users new counter value
@@ -154,7 +150,7 @@ io.on("connection", (socket) => {
     io.to(user.title).emit("resWinner", winner);
     console.log("responseWinner", winner);
   });
-  
+
   socket.on("disconnect", () => {
     const user = removeUser(socket.id);
 
@@ -170,7 +166,6 @@ io.on("connection", (socket) => {
     }
   });
 });
-
 
 app.use(notFound);
 app.use("*", errorHandler);

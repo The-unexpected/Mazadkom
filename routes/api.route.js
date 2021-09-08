@@ -85,7 +85,7 @@ async function updateProductElementByTitle(req, res, next) {
           : data[0].startingPrice;
         data[0].picture = picture ? picture : data[0].picture;
         data[0].save();
-        console.log(data);
+        // console.log(data);
         res.send(data);
       }
     });
